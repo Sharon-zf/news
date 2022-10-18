@@ -213,3 +213,16 @@ export const editUserImag = (imagData) => axios({
   },
   data: imagData
 })
+// 刷新用户token
+export const reGetTokenAPI = () => axios({
+  url: '/v1_0/authorizations',
+  method: 'PUT',
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('refresh_token')}`
+  }
+})
+// 发送验证码短信
+export const getVerificationCodeAPI = ({ telephoneNumber }) => axios({
+  url: `/v1_0/sms/codes/${telephoneNumber}`,
+  method: 'GET'
+})

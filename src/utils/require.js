@@ -1,5 +1,6 @@
 import Axios from 'axios'
-import { removeToken } from './token'
+import { removeToken, setToken } from './token'
+import { reGetTokenAPI } from '../api/index.js'
 // import { getToken } from './token.js'
 
 const axios = Axios.create({
@@ -17,15 +18,21 @@ export default ({ url, method = 'GET', params = {}, data = {}, headers = {} }) =
 }
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) { // 当状态码为2xx/3xx开头的进这里
-  // 对响应数据做点什么
   return response
 }, async function (error) { // 响应状态码4xx/5xx进这里
-  // 对响应错误做点什么
-  // console.dir(error)
   if (error.response.status === 401) { // 身份过期
     // token续签方式1:  去登录页重新登录, token无用, 清掉-确保路由守卫if进不去
+    // removeToken()
+    // this.$router.push({ path: '/login' })
+    // 续签方式2：自动获取新的tokens
     removeToken()
-    this.$router.push({ path: '/login' })
+    const res = await reGetTokenAPI()
+    setToken(res.data.data.token)
+    console.log(res)
+    // 把新的token赋予到下一次axios请求的请求头中
+    error.config.headers.Authorization = 'Bearer ' + res.data.data.token
+    // return到await的地方
+    return axios(error.config)
   }
 
   return Promise.reject(error)
