@@ -64,7 +64,7 @@ import {
   userInfomationAPI,
   getVerificationCodeAPI
 } from '../../api/index.js'
-import { Notify } from 'vant'
+import { Notify, Toast } from 'vant'
 import { setToken } from '../../utils/token.js'
 export default {
   data () {
@@ -77,12 +77,12 @@ export default {
       userInfo: [], // 登录后获取到的用户信息
       loginMode: true, // 登录方式：true:密码登录；false: 验证码登录
       verModeInfo: '获取验证码',
-      verCodeCd: false // false: 能获取验证码；true: 不能获取验证码
+      verCodeCd: false, // false: 能获取验证码；true: 不能获取验证码
+      time: 60
     }
   },
   methods: {
     async onSubmit (values) {
-      // console.log('submit', values)
       this.isLoding = true
       try {
         const res = await loginAPI(this.user)
@@ -110,27 +110,42 @@ export default {
     },
     changeLOginMode () {
       this.loginMode = !this.loginMode
-      console.log(111)
     },
     async getVerCode () {
       if (this.user.mobile.length === 0) { // 判断是否输入手机号
-        console.log(22)
+        Toast('请输入手机号')
       } else {
         if (/^1[3-9]\d{9}$/.test(this.user.mobile)) { // 判断是否输入正确格式的手机号
-          // let time = 60
-          this.verModeInfo = '重新获取验证码'
-          this.verCodeCd = true
-          const getVercode = setTimeout(() => {
-            this.verCodeCd = false
-          }, 60000)
-          // const surplusTime = setInterval
-          const res = await getVerificationCodeAPI({
-            telephoneNumber: this.user.mobile
-          })
-          console.log(res)
-          clearTimeout(getVercode)
+          try {
+            const res = await getVerificationCodeAPI({
+              telephoneNumber: this.user.mobile
+            })
+            if (res.status === 200) {
+              Toast('发送成功')
+            }
+          } catch (error) {
+            if (error.response.status === 429) {
+              Toast('请稍后再试')
+            }
+            if (error.response.status === 404) {
+              Toast('手机号不正确')
+            }
+            return
+          }
+          this.verModeInfo = `重新获取(${this.time})`
+          this.verCodeCd = true // 按钮变为不可点击
+          const surplusTime = setInterval(() => {
+            this.time--
+            this.verModeInfo = `重新获取(${this.time})`
+            if (this.time <= 0) {
+              this.verCodeCd = false // 按钮变为可以点击
+              this.verModeInfo = '重新获取'
+              clearInterval(surplusTime)
+            }
+          }, 1000)
+          this.time = 60 // 重置倒计时
         } else {
-          console.log(33)
+          Toast('请输入正确的手机号')
         }
       }
     }
