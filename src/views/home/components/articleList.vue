@@ -78,6 +78,14 @@ export default {
       } catch (err) {
         Notify({ type: 'danger', message: '反馈错误，请稍后再试' })
       }
+      // 反馈不敢兴趣后删除该文章
+      this.newsData = this.newsData.filter((item) => {
+        return item.art_id !== id
+      })
+      // 当页面中文章被用户删除至7篇文章时加载新文章
+      if (this.newsData.length <= 7) {
+        this.onLoad()
+      }
     },
     // 用户反馈“举报”提交举报信息
     async artBad (artId, type) {
