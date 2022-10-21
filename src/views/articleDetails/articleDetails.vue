@@ -66,7 +66,7 @@
         >
       </div>
     </div>
-    <ArticleComment :divHeigth="divHeigth"></ArticleComment>
+    <ArticleComment :artId="artId" :isStart="isStart" :divHeigth="divHeigth"></ArticleComment>
   </div>
 </template>
 
@@ -83,12 +83,16 @@ export default {
   data () {
     return {
       detail: Object,
-      divHeigth: 0
+      divHeigth: 0,
+      isStart: Boolean,
+      artId: ''
     }
   },
   async created () {
     const res = await articleDetailAPI({ article_id: this.$route.query.aid })
     this.detail = res.data.data
+    this.isStart = res.data.data.is_collected
+    this.artId = res.data.data.art_id
     // console.log(this.detail)
   },
   methods: {

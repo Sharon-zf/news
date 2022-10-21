@@ -21,11 +21,11 @@
       </div>
       <div class="newsBody" v-if="isShow">
         <div class="description">
-          <span>{{ artObj.aut_name }}</span> &nbsp;
-          <span>{{ artObj.is_top }}评论</span>&nbsp;
+          <span>{{ artObj.aut_name }}</span> &nbsp;&nbsp;&nbsp;
+          <span>{{ artObj.is_top }}评论</span>&nbsp;&nbsp;&nbsp;&nbsp;
           <span>{{ artObj.pubdate }}</span>
         </div>
-        <van-icon size="15" name="cross" @click.stop="show = true"/>
+        <van-icon v-if="isShowIcon" class="dislikeIcon" size="15" name="cross" @click.stop="show = true"/>
       </div>
     </div>
     <van-action-sheet
@@ -45,6 +45,10 @@ export default {
   props: {
     artObj: Object,
     isShow: {
+      type: Boolean,
+      default: true
+    },
+    isShowIcon: {
       type: Boolean,
       default: true
     }
@@ -89,17 +93,25 @@ export default {
   width: 100%;
   height: auto;
   border-bottom: solid 2px #f4f4f4;
+  overflow: hidden;
   .title {
     font-size: 0.5rem;
     margin: 5px 20px;
   }
   .newsBody {
-    display: flex;
-    justify-content: space-around;
-    margin: 7px 0px;
+    display: inline-block;
+    margin: 0 0 0 13px;
+    position: relative;
+    width: 100%;
     .description {
+      display: inline-block;
       font-size: 0.3rem;
       color: #5f6368;
+    }
+    .dislikeIcon{
+      position: absolute;
+      right: 25px;
+      bottom: 2px;
     }
   }
 }

@@ -54,7 +54,7 @@
         >
           <van-icon @click="move()" name="comment-o" size="0.53333334rem" />
         </van-badge>
-        <van-icon name="star-o" size="0.53333334rem" />
+        <van-icon @click="star" :color="start ? '#ffdf00' : '#000000'" :name="start ? 'star' : 'star-o'" size="0.53333334rem" />
         <van-icon name="share-o" size="0.53333334rem" />
       </div>
     </div>
@@ -81,8 +81,11 @@ import {
   getComment,
   disStartComment,
   startComment,
-  sentOutComment
+  sentOutComment,
+  postStartArticleAPI,
+  disStartArticleAPI
 } from '../../api/index.js'
+import { Toast } from 'vant'
 export default {
   data () {
     return {
@@ -93,11 +96,17 @@ export default {
       page: null, // 获取评论页数
       loading: false,
       finished: false,
-      keyNum: true
+      keyNum: true,
+      start: this.isStart
     }
   },
   props: {
-    divHeigth: Number
+    divHeigth: Number,
+    isStart: {
+      type: Boolean,
+      default: false
+    }, // 是否收藏
+    artId: String
   },
   async created () {
     const res = await getComment({
@@ -108,7 +117,7 @@ export default {
     this.commentCount += res.data.data.total_count
     this.page = res.data.data.last_id // 下一页的id
     // console.log(res)
-    console.log(this.comments)
+    // console.log(this.comments)
   },
   methods: {
     async like (item) {
@@ -190,6 +199,24 @@ export default {
       const m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':'
       const s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       return Y + M + D + h + m + s
+    },
+    // (取消)收藏功能
+    async star () {
+      if (this.start === false) {
+        this.start = !this.start
+        const res = await postStartArticleAPI({ target: this.artId })
+        if (res.status === 201) {
+          Toast('收藏成功')
+        }
+        console.log(res)
+      } else {
+        this.start = !this.start
+        const res = await disStartArticleAPI({ target: this.artId })
+        if (res.status === 204) {
+          Toast('已取消收藏')
+        }
+        console.log(res)
+      }
     }
   }
 }

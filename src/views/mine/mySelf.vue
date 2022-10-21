@@ -6,10 +6,10 @@
       <van-cell>
         <!-- 使用 title 插槽来自定义标题 -->
         <template #icon>
-          <img :src="userInfo.photo" alt="" class="avatar">
+          <img :src="userInfo.photo" alt="" class="avatar" />
         </template>
         <template #title>
-          <span class="username">{{ userInfo.name}}</span>
+          <span class="username">{{ userInfo.name }}</span>
         </template>
         <template #label>
           <van-tag color="#fff" text-color="#007bff">申请认证</van-tag>
@@ -29,15 +29,24 @@
           <span>{{ userInfo.follow_count }}</span>
           <span>粉丝</span>
         </div>
+        <div class="user-data-item">
+          <span>{{ userInfo.like_count }}</span>
+          <span>被赞</span>
+        </div>
       </div>
     </div>
 
     <!-- 操作面板 -->
     <van-cell-group class="action-card">
-      <van-cell icon="edit" title="编辑资料" is-link to="/userInfo"/>
-      <van-cell icon="chat-o" title="小思同学" is-link to="/chatWindow"/>
-      <van-cell @click="outLogin" icon="warning-o" title="退出登录" is-link />
+      <van-cell icon="edit" title="编辑资料" is-link to="/userInfo" />
+      <van-cell icon="star-o" title="我的收藏" is-link @click="starList('star')" />
+      <van-cell icon="clock-o" title="浏览历史" is-link @click="historyList('history')" />
+      <van-cell icon="newspaper-o" title="我的作品" is-link />
+      <van-cell icon="chat-o" title="小思同学" is-link to="/chatWindow" />
     </van-cell-group>
+    <van-button  @click="outLogin" class="outButton" style="width: 150px" round plain type="info"
+      >退出登录</van-button
+    >
   </div>
 </template>
 
@@ -72,6 +81,18 @@ export default {
         .catch(() => {
           // on cancel
         })
+    },
+    starList (key) {
+      this.$router.push({
+        path: `/showart/${key}`
+      }
+      )
+    },
+    historyList (key) {
+      this.$router.push({
+        path: `/showart/${key}`
+      }
+      )
     }
   }
 }
@@ -79,6 +100,7 @@ export default {
 
 <style scoped lang="less">
 .user-container {
+  position: relative;
   .user-card {
     background-color: #007bff;
     color: white;
@@ -115,6 +137,12 @@ export default {
       align-items: center;
       width: 33.33%;
     }
+  }
+  .outButton {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50% , 0);
+    margin-top: 99px;
   }
 }
 </style>

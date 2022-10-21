@@ -49,6 +49,10 @@ const routes = [
   {
     path: '/chatWindow',
     component: () => import('../views/chat/chatWindow.vue')
+  },
+  {
+    path: '/showart/:key',
+    component: () => import('../components/showArticle.vue')
   }
 ]
 
