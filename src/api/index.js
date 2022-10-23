@@ -227,7 +227,7 @@ export const getVerificationCodeAPI = ({ telephoneNumber }) => axios({
   method: 'GET'
 })
 // 收藏文章
-export const postStartArticleAPI = ({ target }) => axios({
+export const postStarArticleAPI = ({ target }) => axios({
   url: '/v1_0/article/collections',
   method: 'POST',
   headers: {
@@ -238,7 +238,7 @@ export const postStartArticleAPI = ({ target }) => axios({
   }
 })
 // 取消收藏
-export const disStartArticleAPI = ({ target }) => axios({
+export const disStarArticleAPI = ({ target }) => axios({
   url: `/v1_0/article/collections/${target}`,
   method: 'DELETE',
   headers: {
@@ -260,6 +260,30 @@ export const userStarArtListAPI = ({ page = 1, per_page = 10 }) => axios({
 // 获取用户浏览历史列表
 export const userHistorArtListAPI = ({ page = 1, per_page = 10 }) => axios({
   url: '/v1_0/user/histories',
+  method: 'GET',
+  headers: {
+    Authorization: `Bearer ${getToken()}`
+  },
+  params: {
+    page,
+    per_page
+  }
+})
+// 获取用户关注列表接口
+export const getUserFollowListAPI = ({ page = 1, per_page = 10 }) => axios({
+  url: '/v1_0/user/followings',
+  method: 'GET',
+  headers: {
+    Authorization: `Bearer ${getToken()}`
+  },
+  params: {
+    page,
+    per_page
+  }
+})
+// 获取用户粉丝列表接口
+export const getUserFansListAPI = ({ page = 1, per_page = 10 }) => axios({
+  url: '/v1_0/user/followings',
   method: 'GET',
   headers: {
     Authorization: `Bearer ${getToken()}`

@@ -66,11 +66,12 @@
         >
       </div>
     </div>
-    <ArticleComment :artId="artId" :isStart="isStart" :divHeigth="divHeigth"></ArticleComment>
+    <ArticleComment :artId="artId" :isStar="isStar" :divHeigth="divHeigth"></ArticleComment>
   </div>
 </template>
 
 <script>
+import { Toast } from 'vant'
 import {
   articleDetailAPI,
   disFollowUser,
@@ -84,16 +85,15 @@ export default {
     return {
       detail: Object,
       divHeigth: 0,
-      isStart: Boolean,
+      isStar: false,
       artId: ''
     }
   },
-  async created () {
+  async mounted () {
     const res = await articleDetailAPI({ article_id: this.$route.query.aid })
     this.detail = res.data.data
-    this.isStart = res.data.data.is_collected
+    this.isStar = res.data.data.is_collected
     this.artId = res.data.data.art_id
-    // console.log(this.detail)
   },
   methods: {
     // 点击关注事件
@@ -101,11 +101,11 @@ export default {
       if (this.detail.is_followed === true) {
         await disFollowUser({ followId: this.detail.aut_id })
         this.detail.is_followed = !this.detail.is_followed
-        // console.log('取消关注了')
+        Toast('已取消关注')
       } else {
         await followUser({ followId: this.detail.aut_id })
         this.detail.is_followed = !this.detail.is_followed
-        // console.log('关注了')
+        Toast('已关注')
       }
     },
     // 点击点赞事件

@@ -8,7 +8,7 @@
       <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="我是有底线的 ~ ~"
+        :finished-text="list.length === 0 ? ' ' : '我是有底线的 ~ ~'"
         @load="onLoad"
       >
       <ArticleItem
@@ -20,6 +20,7 @@
       ></ArticleItem>
       </van-list>
     </div>
+    <van-empty v-if="list.length === 0" description="暂无更多内容 ~ ~" />
   </div>
 </template>
 
@@ -40,9 +41,11 @@ export default {
   },
   created () {
     if (this.key === 'star') {
+      this.title = '我的收藏'
       this.getStarData()
     } else {
       if (this.key === 'history') {
+        this.title = '浏览历史'
         this.getHistorData()
       }
     }
@@ -52,26 +55,39 @@ export default {
   },
   methods: {
     async onLoad () {
-      if (this.list.length > 0) {
+      if (this.list.length >= 10) {
         this.loading = true
         this.page++
-      }
-      if (this.key === 'star') {
-        console.log(this.key)
-        this.getStarData()
-        this.title = '我的收藏'
-      } else {
-        if (this.key === 'history') {
-          console.log(this.key)
-          this.getHistorData()
-          this.title = '浏览历史'
+        if (this.key === 'star') {
+          this.getStarData()
+        } else {
+          if (this.key === 'history') {
+            this.getHistorData()
+          }
         }
       }
     },
+    // async getData () {
+    //   if (this.key === 'star') {
+    //     this.title = '我的收藏'
+    //     const res = await userStarArtListAPI({ page: this.page, per_page: 10 })
+    //   } else {
+    //     if (this.key === 'history') {
+    //       this.title = '浏览历史'
+    //       const res = await userHistorArtListAPI({ page: this.page, per_page: 10 })
+    //     }
+    //   }
+    //   this.list = res.data.data.results
+    //   if (res.data.data.results) {
+    //     this.finished = true
+    //     return
+    //   }
+    //   this.list = [...this.list, ...res.data.data.results]
+    //   this.loading = false
+    // },
     async getStarData () {
       const res = await userStarArtListAPI({ page: this.page, per_page: 10 })
       this.list = res.data.data.results
-      console.log(this.list)
       if (res.data.data.results) {
         this.finished = true
         return
@@ -82,7 +98,6 @@ export default {
     async getHistorData () {
       const res = await userHistorArtListAPI({ page: this.page, per_page: 10 })
       this.list = res.data.data.results
-      console.log(this.list)
       if (res.data.data.results) {
         this.finished = true
         return

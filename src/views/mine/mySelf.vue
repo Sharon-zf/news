@@ -21,12 +21,12 @@
           <span>{{ userInfo.art_count }}</span>
           <span>动态</span>
         </div>
-        <div class="user-data-item">
-          <span>{{ userInfo.like_count }}</span>
+        <div @click="showUserList('follow')" class="user-data-item">
+          <span>{{ userInfo.follow_count }}</span>
           <span>关注</span>
         </div>
-        <div class="user-data-item">
-          <span>{{ userInfo.follow_count }}</span>
+        <div @click="showUserList('fans')" class="user-data-item">
+          <span>{{ userInfo.like_count }}</span>
           <span>粉丝</span>
         </div>
         <div class="user-data-item">
@@ -39,8 +39,8 @@
     <!-- 操作面板 -->
     <van-cell-group class="action-card">
       <van-cell icon="edit" title="编辑资料" is-link to="/userInfo" />
-      <van-cell icon="star-o" title="我的收藏" is-link @click="starList('star')" />
-      <van-cell icon="clock-o" title="浏览历史" is-link @click="historyList('history')" />
+      <van-cell icon="star-o" title="我的收藏" is-link @click="showArticleList('star')" />
+      <van-cell icon="clock-o" title="浏览历史" is-link @click="showArticleList('history')" />
       <van-cell icon="newspaper-o" title="我的作品" is-link />
       <van-cell icon="chat-o" title="小思同学" is-link to="/chatWindow" />
     </van-cell-group>
@@ -82,15 +82,15 @@ export default {
           // on cancel
         })
     },
-    starList (key) {
+    showArticleList (key) {
       this.$router.push({
         path: `/showart/${key}`
       }
       )
     },
-    historyList (key) {
+    showUserList (key) {
       this.$router.push({
-        path: `/showart/${key}`
+        path: `/showusers/${key}`
       }
       )
     }

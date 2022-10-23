@@ -53,6 +53,10 @@ const routes = [
   {
     path: '/showart/:key',
     component: () => import('../components/showArticle.vue')
+  },
+  {
+    path: '/showusers/:key',
+    component: () => import('../components/showUsers.vue')
   }
 ]
 

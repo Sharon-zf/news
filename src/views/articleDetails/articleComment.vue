@@ -54,7 +54,12 @@
         >
           <van-icon @click="move()" name="comment-o" size="0.53333334rem" />
         </van-badge>
-        <van-icon @click="star" :color="start ? '#ffdf00' : '#000000'" :name="start ? 'star' : 'star-o'" size="0.53333334rem" />
+        <van-icon
+          @click="Star"
+          :color="star ? '#ffdf00' : '#000000'"
+          :name="star ? 'star' : 'star-o'"
+          size="0.53333334rem"
+        />
         <van-icon name="share-o" size="0.53333334rem" />
       </div>
     </div>
@@ -82,8 +87,8 @@ import {
   disStartComment,
   startComment,
   sentOutComment,
-  postStartArticleAPI,
-  disStartArticleAPI
+  postStarArticleAPI,
+  disStarArticleAPI
 } from '../../api/index.js'
 import { Toast } from 'vant'
 export default {
@@ -97,15 +102,12 @@ export default {
       loading: false,
       finished: false,
       keyNum: true,
-      start: this.isStart
+      star: this.isStar
     }
   },
   props: {
     divHeigth: Number,
-    isStart: {
-      type: Boolean,
-      default: false
-    }, // 是否收藏
+    isStar: Boolean, // 是否收藏
     artId: String
   },
   async created () {
@@ -118,6 +120,7 @@ export default {
     this.page = res.data.data.last_id // 下一页的id
     // console.log(res)
     // console.log(this.comments)
+    // console.log(this.start)
   },
   methods: {
     async like (item) {
@@ -125,15 +128,13 @@ export default {
         // 取消点赞
         try {
           await disStartComment({ target: item.com_id })
-        } catch (error) {
-        }
+        } catch (error) {}
         // console.log('取消')
         item.is_liking = false
       } else {
         try {
           await startComment({ target: item.com_id })
-        } catch (error) {
-        }
+        } catch (error) {}
         item.is_liking = true
         // console.log('点赞')
       }
@@ -143,7 +144,6 @@ export default {
     },
     // 页面滑动到评论区域
     move () {
-      // console.log(this.divHeigth)
       window.scrollTo(0, this.divHeigth)
     },
     // 发送评论事件
@@ -191,32 +191,45 @@ export default {
     },
     // 时间处理函数
     timestampToTime (timestamp) {
-      const date = new Date(timestamp)// 时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      const date = new Date(timestamp) // 时间戳为10位需*1000，时间戳为13位的话不需乘1000
       const Y = date.getFullYear() + '-'
-      const M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
-      const D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' '
-      const h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':'
-      const m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':'
-      const s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
+      const M =
+        (date.getMonth() + 1 < 10
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) + '-'
+      const D =
+        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' '
+      const h =
+        (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':'
+      const m =
+        (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) +
+        ':'
+      const s =
+        date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       return Y + M + D + h + m + s
     },
     // (取消)收藏功能
-    async star () {
-      if (this.start === false) {
-        this.start = !this.start
-        const res = await postStartArticleAPI({ target: this.artId })
+    async Star () {
+      if (this.star === false) {
+        this.star = !this.star
+        const res = await postStarArticleAPI({ target: this.artId })
         if (res.status === 201) {
           Toast('收藏成功')
         }
         console.log(res)
       } else {
-        this.start = !this.start
-        const res = await disStartArticleAPI({ target: this.artId })
+        this.star = !this.star
+        const res = await disStarArticleAPI({ target: this.artId })
         if (res.status === 204) {
           Toast('已取消收藏')
         }
         console.log(res)
       }
+    }
+  },
+  watch: {
+    isStar: function (newVal, oldVal) {
+      this.star = newVal
     }
   }
 }

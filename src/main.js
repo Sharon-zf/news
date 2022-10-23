@@ -8,7 +8,7 @@ import 'amfe-flexible'
 import {
   NavBar, Form, Field, Button, Tabbar, TabbarItem, Icon, Tab, Tabs, List,
   PullRefresh, ActionSheet, Overlay, Col, Row, Badge, Search, Cell, Divider,
-  Tag, CellGroup, Dialog, Image, Popup, DatetimePicker, Toast
+  Tag, CellGroup, Dialog, Image, Popup, DatetimePicker, Toast, Empty
 } from 'vant'
 
 Vue.config.productionTip = false
@@ -39,6 +39,7 @@ Vue.use(Image)
 Vue.use(Popup)
 Vue.use(DatetimePicker)
 Vue.use(Toast)
+Vue.use(Empty)
 // 获取焦点自定义指令
 Vue.directive('focus', {
   inserted (el) {
